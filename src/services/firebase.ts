@@ -37,10 +37,10 @@ export interface FirebaseConfig {
 }
 
 export class FirebaseDatastore implements Datastore {
-  _app: FirebaseApp;
-  _db: Firestore;
-  _auth: Auth;
-  _gamesRef: CollectionReference;
+  private _app: FirebaseApp;
+  private _db: Firestore;
+  private _auth: Auth;
+  private _gamesRef: CollectionReference;
 
   constructor(config: FirebaseConfig, gamesRef: string = "games") {
     this._app = initializeApp(config);
@@ -55,6 +55,10 @@ export class FirebaseDatastore implements Datastore {
     const docRef = doc(this._gamesRef, gameId);
     const docSnap = getDoc(docRef);
     return docSnap;
+  }
+
+  getAuth(): Auth {
+    return this._auth;
   }
 
   async doesGameExist(gameId: string): Promise<boolean> {

@@ -29,17 +29,3 @@ export interface Game {
   status: GameStatus;
   players: Player[];
 }
-export interface AnonymousUserData {
-  type: "anonymous";
-  id: string;
-  name: string;
-}
-export interface GoogleUserData {
-  type: "google";
-  id: string;
-  name: string;
-  email: string;
-  locale: string;
-  picture: string;
-}
-export type UserData = AnonymousUserData | GoogleUserData;
