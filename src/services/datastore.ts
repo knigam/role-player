@@ -1,11 +1,13 @@
-import { Game } from "../game/types";
+import { GameState, Response } from "../game/types";
 
 export interface Datastore {
   doesGameExist: (gameId: string) => Promise<boolean>;
-  getGame: (gameId: string) => Promise<Game>;
+  getGame: (gameId: string) => Promise<GameState>;
   listenForGameUpdates: (
     gameId: string,
-    setGameCallback: (value: React.SetStateAction<Game | undefined>) => void
+    setGameCallback: (
+      value: React.SetStateAction<GameState | undefined>
+    ) => void
   ) => void;
-  saveGame: (state: Game, onSuccess?: () => void) => void;
+  saveGame: (state: GameState) => Promise<Response>;
 }

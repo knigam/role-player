@@ -18,7 +18,7 @@ export default defineConfig({
     },
     rollupOptions: {
       // Externalize dependencies to avoid bundling them
-      external: ["react", "react-dom"], // Add other dependencies you want to externalize
+      external: ["react", "react-dom", "firebase"], // Add other dependencies you want to externalize
       output: {
         // Ensure the global variable is correct for the UMD format
         globals: {

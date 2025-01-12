@@ -15,16 +15,19 @@
   "dependencies": {
     "@types/react": "^19.0.2",
     "@types/react-dom": "^19.0.2",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "react-router-dom": "^6.28.1"
+  },
+  "peerDependencies": {
     "firebase": "^11.1.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0"
   },
-  "peerDependencies": {
-    "react": "^18.0.0",
-    "react-dom": "^18.0.0"
-  },
   "devDependencies": {
+    "@types/react-router-dom": "^5.3.3",
     "@vitejs/plugin-react": "^4.3.4",
+    "sass-embedded": "^1.83.1",
     "typescript": "^5.7.2",
     "vite": "^6.0.6",
     "vite-plugin-dts": "^4.4.0"

@@ -1,5 +1,4 @@
 import {
-  Auth,
   onAuthStateChanged,
   signInAnonymously,
   Unsubscribe,
@@ -31,19 +30,16 @@ export function getUserDataFromFirebaseUser(user: User): UserData {
 
 export function signInAnonymouslyWithFirebase(
   firebaseService: FirebaseDatastore,
-  setUserState: (user?: User) => void
+  setUserState: (userData: UserData) => void
 ): Unsubscribe {
   const auth = firebaseService.getAuth();
   return onAuthStateChanged(auth, async (user) => {
     if (user) {
-      setUserState(user);
-      //   if (!userState) {
-      //     setUserState({
-      //       type: "anonymous",
-      //       id: user.uid,
-      //       name: user.displayName || "",
-      //     });
-      //   }
+      setUserState({
+        type: "anonymous",
+        id: user.uid,
+        name: user.displayName || "",
+      });
     } else {
       signInAnonymously(auth).catch((error) => {
         const errorCode = error.code;

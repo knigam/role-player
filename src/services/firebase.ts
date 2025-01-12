@@ -13,7 +13,7 @@ import {
 } from "firebase/firestore";
 import { Auth, getAuth } from "firebase/auth";
 import { Datastore } from "./datastore";
-import { Game } from "../game/types";
+import { GameState, Response } from "../game/types";
 
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -66,10 +66,10 @@ export class FirebaseDatastore implements Datastore {
     return docSnap.exists();
   }
 
-  async getGame(gameId: string): Promise<Game> {
+  async getGame(gameId: string): Promise<GameState> {
     const docSnap = await this.getDocSnap(gameId);
     if (docSnap.exists()) {
-      return docSnap.data() as Game;
+      return docSnap.data() as GameState;
     } else {
       throw Error("Game does not exist");
     }
@@ -77,24 +77,24 @@ export class FirebaseDatastore implements Datastore {
 
   listenForGameUpdates(
     gameId: string,
-    setGameCallback: (value: React.SetStateAction<Game | undefined>) => void
+    setGameCallback: (
+      value: React.SetStateAction<GameState | undefined>
+    ) => void
   ): void {
     onSnapshot(doc(this._gamesRef, gameId), (doc) => {
       if (doc.exists()) {
-        setGameCallback({ ...doc.data() } as Game);
+        setGameCallback({ ...doc.data() } as GameState);
       } else {
         throw Error("Game does not exist");
       }
     });
   }
 
-  saveGame(state: Game, onSuccess?: () => void): void {
-    setDoc(doc(this._gamesRef, state.gameId), {
+  saveGame(state: GameState): Promise<Response> {
+    return setDoc(doc(this._gamesRef, state.gameId), {
       ...state,
     })
-      .then((t) => onSuccess && onSuccess())
-      .catch((e) => {
-        throw Error(`Unable to save game. Error: ${e}`);
-      });
+      .then((t) => Response.ok())
+      .catch((e) => Response.error(`Unable to save game. Error: ${e}`));
   }
 }
