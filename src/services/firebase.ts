@@ -28,12 +28,12 @@ import { GameState, Response } from "../game/types";
 // };
 
 export interface FirebaseConfig {
-  apiKey: string;
-  authDomain: string;
-  projectId: string;
-  storageBucket: string;
-  messagingSenderId: string;
-  appId: string;
+  apiKey?: string;
+  authDomain?: string;
+  projectId?: string;
+  storageBucket?: string;
+  messagingSenderId?: string;
+  appId?: string;
 }
 
 export class FirebaseDatastore implements Datastore {

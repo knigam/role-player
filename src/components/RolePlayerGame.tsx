@@ -31,7 +31,7 @@ export const RolePlayerGame: React.FC<GameProps> = ({
   useEffect(() => {
     const unsub = signInAnonymouslyWithFirebase(
       gameEngine.getDataStore() as FirebaseDatastore,
-      setUserState
+      setUserStateIfNotSet
     );
     if (userState && !gameState) {
       initGame(gameEngine, userState, path, navigate, setGameState).catch(
@@ -94,12 +94,12 @@ export const RolePlayerGame: React.FC<GameProps> = ({
   } else {
     return <div></div>;
   }
-  // Not sure if the following is necessary
-  // function setUserStateIfNotSet(userData: UserData): void {
-  //   if (!userState) {
-  //     setUserState(userData);
-  //   }
-  // }
+
+  function setUserStateIfNotSet(userData: UserData): void {
+    if (!userState) {
+      setUserState(userData);
+    }
+  }
 };
 
 async function initGame(
@@ -112,8 +112,8 @@ async function initGame(
   const datastore = gameEngine.getDataStore();
   if (path === "/game") {
     const gameId = Date.now().toString(36).slice(0, 6);
-
-    if (!datastore.doesGameExist(gameId)) {
+    const gameExists = await datastore.doesGameExist(gameId);
+    if (!gameExists) {
       gameEngine.createGame(gameId, userState).then((result) => {
         if (result.type === "success") {
           navigate(`/game/${gameId}`, { replace: true });

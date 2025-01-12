@@ -52,7 +52,7 @@ export class GameEngine {
     const invalidRoles = settings.roles.filter(
       (r) => !this._gameRules.validRoles.has(r)
     );
-    if (invalidRoles) {
+    if (invalidRoles.length) {
       return Response.error(`The following roles are invalid: ${invalidRoles}`);
     }
 

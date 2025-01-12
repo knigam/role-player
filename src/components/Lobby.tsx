@@ -83,7 +83,7 @@ export const Lobby: React.FC<LobbyProps> = ({
         ))}
       </div>
       <br />
-      {!isCreator && (
+      {isCreator && (
         <button
           className="role-player-btn"
           onClick={playGame}
