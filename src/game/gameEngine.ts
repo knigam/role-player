@@ -33,7 +33,7 @@ export class GameEngine {
       creatorName: userData.name,
       settings: { roles: [] },
       status: GameStatus.NOT_STARTED,
-      players: [{ id: userData.id, name: userData.name }],
+      players: [{ id: userData.id, name: userData.name || "Game Creator" }],
     };
     return this._datastore.saveGame(gameState);
   }
@@ -60,21 +60,15 @@ export class GameEngine {
   }
 
   async joinGame(state: GameState, userData: UserData): Promise<Response> {
-    state.players.forEach((p) => {
-      if (p.id === userData.id) {
-        return Response.error("User has already joined the game");
-      }
-      if (p.name === userData.name) {
-        return Response.error(`The name '${userData.name}' is already taken`);
-      }
-    });
+    const { players } = state;
+    const isNameTaken = players.find(
+      (p) => p.id !== userData.id && p.name === userData.name
+    );
+    if (isNameTaken) {
+      return Response.error(`The name '${userData.name}' is already taken`);
+    }
 
-    const newGameState = {
-      ...state,
-      players: [...state.players, { id: userData.id, name: userData.name }],
-    };
-
-    return this._datastore.saveGame(newGameState);
+    return this._datastore.saveGame(this.addOrUpdatePlayer(state, userData));
   }
 
   async leaveGame(state: GameState, userData: UserData): Promise<Response> {
@@ -88,6 +82,9 @@ export class GameEngine {
   }
 
   async playGame(state: GameState, userData: UserData): Promise<Response> {
+    //join the game before starting
+    state = this.addOrUpdatePlayer(state, userData);
+
     const { creatorId, players, settings, status } = state;
     const { id } = userData;
     const { minPlayers, maxPlayers } = this._gameRules;
@@ -154,5 +151,16 @@ export class GameEngine {
         this._gameRules.generateMessageForRole(currPlayer.role, state.players),
       status: state.status,
     };
+  }
+
+  private addOrUpdatePlayer(state: GameState, userData: UserData): GameState {
+    // If the player is already in the game state's list of players, remove the old entry first
+    // before adding the player back in
+    const filteredPlayers = state.players.filter((p) => p.id !== userData.id);
+    const newGameState = {
+      ...state,
+      players: [...filteredPlayers, { id: userData.id, name: userData.name }],
+    };
+    return newGameState;
   }
 }

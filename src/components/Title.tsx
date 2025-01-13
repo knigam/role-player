@@ -17,6 +17,7 @@ export const Title: React.FC = () => {
           id="gameIdInput"
           className="role-player-input-btn-input"
           value={gameId}
+          placeholder="Game Code"
           onChange={(e) => setGameId(e.target.value.toLowerCase())}
         />
         <Link to={`/game/${gameId}`}>

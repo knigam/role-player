@@ -27,9 +27,10 @@ export const Lobby: React.FC<LobbyProps> = ({
 }) => {
   const url = document.baseURI;
   const { players, settings } = gameState;
-  const { isCreator } = gameEngine.getPlayerState(gameState, userState);
+  const isCreator = gameState.creatorId === userState.id;
   const gameRules = gameEngine.getGameRules();
 
+  const [nameState, setNameState] = useState<string>(userState.name);
   const [errorState, setErrorState] = useState<string | undefined>(undefined);
 
   //   const [playersListState, setPlayersListState] = useState<PlayerName[]>(
@@ -41,8 +42,24 @@ export const Lobby: React.FC<LobbyProps> = ({
   //     setPlayersListState(getListOfPlayers(gameState));
   //   }, [players]);
 
-  const playGame = () => {
-    handleErrors(gameEngine.playGame(gameState, userState));
+  const playOrJoinGame = () => {
+    if (nameState.trim()) {
+      const newUserState = {
+        ...userState,
+        name: nameState,
+      };
+      isCreator ? playGame(newUserState) : joinGame(newUserState);
+    } else {
+      setErrorState("Name cannot be left blank");
+    }
+  };
+
+  const playGame = (player: UserData) => {
+    handleErrors(gameEngine.playGame(gameState, player));
+  };
+
+  const joinGame = (player: UserData) => {
+    handleErrors(gameEngine.joinGame(gameState, player));
   };
 
   return (
@@ -67,7 +84,7 @@ export const Lobby: React.FC<LobbyProps> = ({
       <h5>{errorState || ""}</h5>
       <div className="GameSettings">
         {[...gameRules.validRoles].map((role) => (
-          <>
+          <div key={`${role}-setting`}>
             <label>
               <input
                 disabled={!isCreator}
@@ -79,19 +96,31 @@ export const Lobby: React.FC<LobbyProps> = ({
               {role}
             </label>
             <br />
-          </>
+          </div>
         ))}
       </div>
       <br />
-      {isCreator && (
+      <div>
+        Current Players: {gameState.players.map((p) => p.name).join(", ")}
+      </div>
+      <br />
+      <span>
+        <input
+          className="role-player-input-btn-input"
+          type="text"
+          value={nameState}
+          placeholder="Name"
+          id="nameText"
+          onChange={(event) => setNameState(event.target.value)}
+        />
         <button
-          className="role-player-btn"
-          onClick={playGame}
+          className="role-player-btn role-player-input-btn"
+          onClick={playOrJoinGame}
           disabled={players.length === 0}
         >
-          Play!
+          {isCreator ? "Play!" : "Join!"}
         </button>
-      )}
+      </span>
     </div>
   );
 
