@@ -91,6 +91,10 @@ $background-color: #ffe39f;
     top: 0;
     color: $secondary-color;
   }
+
+  .multiline {
+    white-space: pre-wrap;
+  }
 }
 
 #urlText {

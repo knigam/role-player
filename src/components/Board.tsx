@@ -19,8 +19,9 @@ export const Board: React.FC<BoardProps> = ({
   const { players, message } = gameEngine.getPlayerState(gameState, userState);
   return (
     <div className="Board">
-      <p>Players: {players}</p>
-      <p>Message: {message}</p>
+      <p>Current Player: {userState.name}</p>
+      <p>All Players: {players.join(", ")}</p>
+      <p className="multiline">Message: {message}</p>
     </div>
   );
 };
