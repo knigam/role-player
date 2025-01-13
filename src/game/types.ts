@@ -1,6 +1,7 @@
 export type PlayerName = string;
 export interface PlayerState {
   isCreator: boolean;
+  name: PlayerName;
   players: PlayerName[];
   message?: string;
   status: GameStatus;
@@ -29,6 +30,7 @@ export enum GameStatus {
 }
 export interface GameState {
   gameId: string;
+  round: number;
   creatorId: string;
   creatorName: PlayerName;
   settings: GameSettings;

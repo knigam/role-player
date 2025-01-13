@@ -31,6 +31,7 @@ export class GameEngine {
       gameId: gameId,
       creatorId: userData.id,
       creatorName: userData.name,
+      round: 1,
       settings: { roles: [] },
       status: GameStatus.NOT_STARTED,
       players: [{ id: userData.id, name: userData.name || "Game Creator" }],
@@ -119,6 +120,10 @@ export class GameEngine {
     }
   }
 
+  async endGame(state: GameState, userData: UserData): Promise<Response> {
+    return this._datastore.saveGame({ ...state, status: GameStatus.GAME_OVER });
+  }
+
   async playAgain(state: GameState, userData: UserData): Promise<Response> {
     if (state.status !== GameStatus.GAME_OVER) {
       return Response.error("The game has not finished yet");
@@ -130,6 +135,7 @@ export class GameEngine {
 
     const newGameState = {
       ...state,
+      round: state.round + 1,
       status: GameStatus.NOT_STARTED,
       players: playersWithoutRoles,
     };
@@ -145,6 +151,7 @@ export class GameEngine {
 
     return {
       isCreator: state.creatorId === userData.id,
+      name: currPlayer.name,
       players: state.players.map((p) => p.name),
       message:
         currPlayer.role &&
