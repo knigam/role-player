@@ -5,7 +5,7 @@ import path from "path";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react(), dts({ include: ["src"] })],
+  plugins: [react(), dts({ include: ["src"], outDir: "dist" })],
   build: {
     lib: {
       // The entry point for your library
@@ -18,17 +18,19 @@ export default defineConfig({
     },
     rollupOptions: {
       // Externalize dependencies to avoid bundling them
-      external: ["react", "react-dom", "firebase"], // Add other dependencies you want to externalize
+      external: ["react", "react-dom", "react-router-dom", "firebase"], // Add other dependencies you want to externalize
       output: {
         // Ensure the global variable is correct for the UMD format
         globals: {
           react: "React",
           "react-dom": "ReactDOM",
+          "react-router-dom": "ReactRouterDOM",
         },
       },
     },
     // Minify for production
     minify: "esbuild",
+    cssCodeSplit: true,
     sourcemap: true, // Generate source maps for debugging
   },
   resolve: {
