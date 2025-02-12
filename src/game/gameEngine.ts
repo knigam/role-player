@@ -86,7 +86,7 @@ export class GameEngine {
     }
 
     try {
-      const playersWithRoles = this._gameRules.assignRoles(players, settings.roles);
+      const playersWithRoles = this._gameRules.assignRoles(state, settings.roles);
       const newGameState = {
         ...state,
         status: GameStatus.IN_PROGRESS,

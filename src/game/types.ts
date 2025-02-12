@@ -17,7 +17,7 @@ export interface GameRules {
   minPlayers: number;
   maxPlayers: number;
   validRoles: Set<RoleName>;
-  assignRoles: (players: Player[], roles: RoleName[]) => Player[];
+  assignRoles: (state: GameState, roles: RoleName[]) => Player[];
   generateMessageForRole: (role: RoleName, players: Player[]) => string;
 }
 export interface GameSettings {
