@@ -15,13 +15,7 @@ interface GameProps {
   BoardComponent?: React.FC<BoardProps>;
 }
 
-export const RolePlayerGame: React.FC<GameProps> = ({
-  height,
-  width,
-  gameEngine,
-  LobbyComponent,
-  BoardComponent,
-}) => {
+export const RolePlayerGame: React.FC<GameProps> = ({ height, width, gameEngine, LobbyComponent, BoardComponent }) => {
   const [gameState, setGameState] = useState<GameState | undefined>(undefined);
   const [userState, setUserState] = useState<UserData | undefined>(undefined);
   const [is404, setIs404] = useState<boolean>(false);
@@ -29,16 +23,11 @@ export const RolePlayerGame: React.FC<GameProps> = ({
   const navigate = useNavigate();
 
   useEffect(() => {
-    const unsub = signInAnonymouslyWithFirebase(
-      gameEngine.getDataStore() as FirebaseDatastore,
-      setUserStateIfNotSet
-    );
+    const unsub = signInAnonymouslyWithFirebase(gameEngine.getDataStore() as FirebaseDatastore, setUserStateIfNotSet);
     if (userState && !gameState) {
-      initGame(gameEngine, userState, path, navigate, setGameState).catch(
-        (e) => {
-          setIs404(true);
-        }
-      );
+      initGame(gameEngine, userState, path, navigate, setGameState).catch(() => {
+        setIs404(true);
+      });
     }
 
     return () => {
@@ -58,13 +47,7 @@ export const RolePlayerGame: React.FC<GameProps> = ({
               userState={userState}
               gameEngine={gameEngine}
             ></LobbyComponent>
-          )) || (
-            <Lobby
-              gameState={gameState}
-              userState={userState}
-              gameEngine={gameEngine}
-            ></Lobby>
-          ))}
+          )) || <Lobby gameState={gameState} userState={userState} gameEngine={gameEngine}></Lobby>)}
         {gameState.status !== GameStatus.NOT_STARTED &&
           ((BoardComponent && (
             <BoardComponent
@@ -74,21 +57,13 @@ export const RolePlayerGame: React.FC<GameProps> = ({
               userState={userState}
               gameEngine={gameEngine}
             ></BoardComponent>
-          )) || (
-            <Board
-              gameState={gameState}
-              userState={userState}
-              gameEngine={gameEngine}
-            ></Board>
-          ))}
+          )) || <Board gameState={gameState} userState={userState} gameEngine={gameEngine}></Board>)}
       </div>
     );
   } else if (is404) {
     return (
       <div className="background">
-        <span className="fourOhFour">
-          Game with this Game Code does not exist
-        </span>
+        <span className="fourOhFour">Game with this Game Code does not exist</span>
       </div>
     );
   } else {

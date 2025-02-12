@@ -1,13 +1,6 @@
 import { UserData } from "../services/auth";
 import { Datastore } from "../services/datastore";
-import {
-  GameStatus,
-  GameRules,
-  GameState,
-  Response,
-  GameSettings,
-  PlayerState,
-} from "./types";
+import { GameStatus, GameRules, GameState, Response, GameSettings, PlayerState } from "./types";
 
 export class GameEngine {
   private _gameRules: GameRules;
@@ -39,20 +32,14 @@ export class GameEngine {
     return this._datastore.saveGame(gameState);
   }
 
-  async setupGame(
-    state: GameState,
-    userData: UserData,
-    settings: GameSettings
-  ): Promise<Response> {
+  async setupGame(state: GameState, userData: UserData, settings: GameSettings): Promise<Response> {
     if (state.status !== GameStatus.NOT_STARTED) {
       return Response.error("Game has already been started");
     } else if (state.creatorId !== userData.id) {
       return Response.error("Only creator can set up the game");
     }
 
-    const invalidRoles = settings.roles.filter(
-      (r) => !this._gameRules.validRoles.has(r)
-    );
+    const invalidRoles = settings.roles.filter((r) => !this._gameRules.validRoles.has(r));
     if (invalidRoles.length) {
       return Response.error(`The following roles are invalid: ${invalidRoles}`);
     }
@@ -62,9 +49,7 @@ export class GameEngine {
 
   async joinGame(state: GameState, userData: UserData): Promise<Response> {
     const { players } = state;
-    const isNameTaken = players.find(
-      (p) => p.id !== userData.id && p.name === userData.name
-    );
+    const isNameTaken = players.find((p) => p.id !== userData.id && p.name === userData.name);
     if (isNameTaken) {
       return Response.error(`The name '${userData.name}' is already taken`);
     }
@@ -95,20 +80,13 @@ export class GameEngine {
     } else if (creatorId !== id) {
       return Response.error("Only the creator can start the game");
     } else if (players.length < minPlayers) {
-      return Response.error(
-        `A minimum of ${minPlayers} is required for the game to start`
-      );
+      return Response.error(`A minimum of ${minPlayers} is required for the game to start`);
     } else if (players.length > maxPlayers) {
-      return Response.error(
-        `A maximum of ${maxPlayers} is required for the game to start`
-      );
+      return Response.error(`A maximum of ${maxPlayers} is required for the game to start`);
     }
 
     try {
-      const playersWithRoles = this._gameRules.assignRoles(
-        players,
-        settings.roles
-      );
+      const playersWithRoles = this._gameRules.assignRoles(players, settings.roles);
       const newGameState = {
         ...state,
         status: GameStatus.IN_PROGRESS,
@@ -120,7 +98,7 @@ export class GameEngine {
     }
   }
 
-  async endGame(state: GameState, userData: UserData): Promise<Response> {
+  async endGame(state: GameState): Promise<Response> {
     return this._datastore.saveGame({ ...state, status: GameStatus.GAME_OVER });
   }
 
@@ -153,9 +131,7 @@ export class GameEngine {
       isCreator: state.creatorId === userData.id,
       name: currPlayer.name,
       players: state.players.map((p) => p.name),
-      message:
-        currPlayer.role &&
-        this._gameRules.generateMessageForRole(currPlayer.role, state.players),
+      message: currPlayer.role && this._gameRules.generateMessageForRole(currPlayer.role, state.players),
       status: state.status,
     };
   }

@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { GameState, GameStatus, PlayerName } from "../game/types";
+import React from "react";
+import { GameState, GameStatus } from "../game/types";
 import { UserData } from "../services/auth";
 import { GameEngine } from "../game/gameEngine";
 
@@ -11,15 +11,8 @@ export interface BoardProps {
   gameEngine: GameEngine;
 }
 
-export const Board: React.FC<BoardProps> = ({
-  gameState,
-  userState,
-  gameEngine,
-}) => {
-  const { isCreator, name, players, message } = gameEngine.getPlayerState(
-    gameState,
-    userState
-  );
+export const Board: React.FC<BoardProps> = ({ gameState, userState, gameEngine }) => {
+  const { isCreator, name, players, message } = gameEngine.getPlayerState(gameState, userState);
   const playAgain = () => {
     if (name.trim()) {
       const newUserState = {

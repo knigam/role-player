@@ -77,9 +77,7 @@ export class FirebaseDatastore implements Datastore {
 
   listenForGameUpdates(
     gameId: string,
-    setGameCallback: (
-      value: React.SetStateAction<GameState | undefined>
-    ) => void
+    setGameCallback: (value: React.SetStateAction<GameState | undefined>) => void
   ): void {
     onSnapshot(doc(this._gamesRef, gameId), (doc) => {
       if (doc.exists()) {
@@ -94,7 +92,7 @@ export class FirebaseDatastore implements Datastore {
     return setDoc(doc(this._gamesRef, state.gameId), {
       ...state,
     })
-      .then((t) => Response.ok())
+      .then(() => Response.ok())
       .catch((e) => Response.error(`Unable to save game. Error: ${e}`));
   }
 }

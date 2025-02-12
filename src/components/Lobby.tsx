@@ -1,10 +1,5 @@
 import React, { useState } from "react";
-import {
-  ErrorResponse,
-  GameSettings,
-  GameState,
-  Response,
-} from "../game/types";
+import { ErrorResponse, GameState, Response } from "../game/types";
 import { UserData } from "../services/auth";
 import { GameEngine } from "../game/gameEngine";
 
@@ -16,15 +11,7 @@ export interface LobbyProps {
   gameEngine: GameEngine;
 }
 
-interface ILobbyState {
-  edited: boolean;
-}
-
-export const Lobby: React.FC<LobbyProps> = ({
-  gameState,
-  userState,
-  gameEngine,
-}) => {
+export const Lobby: React.FC<LobbyProps> = ({ gameState, userState, gameEngine }) => {
   const url = document.baseURI;
   const { players, settings } = gameState;
   const isCreator = gameState.creatorId === userState.id;
@@ -33,22 +20,17 @@ export const Lobby: React.FC<LobbyProps> = ({
   const [nameState, setNameState] = useState<string>(userState.name);
   const [errorState, setErrorState] = useState<string | undefined>(undefined);
 
-  //   const [playersListState, setPlayersListState] = useState<PlayerName[]>(
-  //     getListOfPlayers(gameState)
-  //   );
-
-  // Not sure if this is necessary
-  //   useEffect(() => {
-  //     setPlayersListState(getListOfPlayers(gameState));
-  //   }, [players]);
-
   const playOrJoinGame = () => {
     if (nameState.trim()) {
       const newUserState = {
         ...userState,
         name: nameState,
       };
-      isCreator ? playGame(newUserState) : joinGame(newUserState);
+      if (isCreator) {
+        playGame(newUserState);
+      } else {
+        joinGame(newUserState);
+      }
     } else {
       setErrorState("Name cannot be left blank");
     }
@@ -66,17 +48,8 @@ export const Lobby: React.FC<LobbyProps> = ({
     <div className="Lobby">
       <h3>Game Code: {getSessionCode()}</h3>
       <span>
-        <input
-          className="role-player-input-btn-input"
-          type="url"
-          value={url}
-          id="urlText"
-          readOnly
-        />
-        <button
-          className="role-player-btn role-player-input-btn"
-          onClick={copyUrl}
-        >
+        <input className="role-player-input-btn-input" type="url" value={url} id="urlText" readOnly />
+        <button className="role-player-btn role-player-input-btn" onClick={copyUrl}>
           Copy
         </button>
       </span>
@@ -100,9 +73,7 @@ export const Lobby: React.FC<LobbyProps> = ({
         ))}
       </div>
       <br />
-      <div>
-        Current Players: {gameState.players.map((p) => p.name).join(", ")}
-      </div>
+      <div>Current Players: {gameState.players.map((p) => p.name).join(", ")}</div>
       <br />
       <span>
         <input
@@ -124,14 +95,7 @@ export const Lobby: React.FC<LobbyProps> = ({
     </div>
   );
 
-  //   function getListOfPlayers(gameState: GameState): PlayerName[] {
-  //     return gameState.players.map((p) => p.name);
-  //   }
-
-  function checkboxChanged(
-    event: React.ChangeEvent<HTMLInputElement>,
-    role: string
-  ) {
+  function checkboxChanged(event: React.ChangeEvent<HTMLInputElement>, role: string) {
     if (gameRules.validRoles.has(role)) {
       const settingChecked = event.target.checked;
       const { roles } = settings;
