@@ -26,6 +26,19 @@ export const Board: React.FC<BoardProps> = ({ gameState, userState, gameEngine }
       gameEngine.playAgain(newGameState, newUserState);
     }
   };
+  const returnToLobby = () => {
+    if (name.trim()) {
+      const newUserState = {
+        ...userState,
+        name: name,
+      };
+      const newGameState = {
+        ...gameState,
+        status: GameStatus.NOT_STARTED,
+      };
+      gameEngine.setupGame(newGameState, newUserState, newGameState.settings);
+    }
+  };
   return (
     <div className="Board">
       <p>Round: {gameState.round}</p>
@@ -33,9 +46,14 @@ export const Board: React.FC<BoardProps> = ({ gameState, userState, gameEngine }
       <p>All Players: {players.join(", ")}</p>
       <p className="multiline">Message: {message}</p>
       {isCreator && (
-        <button className="role-player-btn" onClick={playAgain}>
-          Play Again!
-        </button>
+        <span>
+          <button className="role-player-btn" onClick={playAgain}>
+            Play Again!
+          </button>
+          <button className="role-player-btn" onClick={returnToLobby}>
+            Return to Lobby
+          </button>
+        </span>
       )}
     </div>
   );

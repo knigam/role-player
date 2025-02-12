@@ -24,7 +24,7 @@ export class GameEngine {
       gameId: gameId,
       creatorId: userData.id,
       creatorName: userData.name,
-      round: 1,
+      round: 0,
       settings: { roles: [] },
       status: GameStatus.NOT_STARTED,
       players: [{ id: userData.id, name: userData.name || "Game Creator" }],
@@ -71,7 +71,7 @@ export class GameEngine {
     //join the game before starting
     state = this.addOrUpdatePlayer(state, userData);
 
-    const { creatorId, players, settings, status } = state;
+    const { creatorId, players, round, settings, status } = state;
     const { id } = userData;
     const { minPlayers, maxPlayers } = this._gameRules;
 
@@ -89,6 +89,7 @@ export class GameEngine {
       const playersWithRoles = this._gameRules.assignRoles(state, settings.roles);
       const newGameState = {
         ...state,
+        round: round + 1,
         status: GameStatus.IN_PROGRESS,
         players: playersWithRoles,
       };
@@ -113,7 +114,6 @@ export class GameEngine {
 
     const newGameState = {
       ...state,
-      round: state.round + 1,
       status: GameStatus.NOT_STARTED,
       players: playersWithoutRoles,
     };
