@@ -1,6 +1,6 @@
 {
   "name": "@knigam/role-player",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "type": "module",
   "description": "Library to assist with the development of games where players need to be distributed private information based on a set of game rules.",
   "main": "dist/role-player.cjs.js",
