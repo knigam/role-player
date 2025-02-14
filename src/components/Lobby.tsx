@@ -17,7 +17,7 @@ export const Lobby: React.FC<LobbyProps> = ({ gameState, userState, gameEngine }
   const isCreator = gameState.creatorId === userState.id;
   const gameRules = gameEngine.getGameRules();
 
-  const [nameState, setNameState] = useState<string>(userState.name);
+  const [nameState, setNameState] = useState<string>(getDefaultPlayerName(gameEngine, gameState, userState));
   const [errorState, setErrorState] = useState<string | undefined>(undefined);
 
   const playOrJoinGame = () => {
@@ -113,6 +113,14 @@ export const Lobby: React.FC<LobbyProps> = ({ gameState, userState, gameEngine }
         };
         handleErrors(gameEngine.setupGame(gameState, userState, newSettings));
       }
+    }
+  }
+
+  function getDefaultPlayerName(gameEngine: GameEngine, gameState: GameState, userState: UserData): string {
+    try {
+      return gameEngine.getPlayerState(gameState, userState).name;
+    } catch {
+      return userState.name;
     }
   }
 
